@@ -24,8 +24,9 @@ public class ExpenseTrackerView extends JFrame {
   private JButton amountFilterBtn;
 
   private JButton clearFilterBtn;
-    
-  private List<Transaction> displayedTransactions = new ArrayList<>(); // ✅ Moved here
+  private JButton removeTransactionBtn; // Added remove button
+
+  private List<Transaction> displayedTransactions = new ArrayList<>();
 
   public ExpenseTrackerView() {
     setTitle("Expense Tracker");
@@ -54,7 +55,8 @@ public class ExpenseTrackerView extends JFrame {
     amountFilterBtn = new JButton("Filter by Amount");
 
     clearFilterBtn = new JButton("Clear Filter");
-    
+    removeTransactionBtn = new JButton("Remove Selected Transaction"); // Initialize remove button
+
     JPanel inputPanel = new JPanel();
     inputPanel.add(amountLabel);
     inputPanel.add(amountField);
@@ -62,14 +64,21 @@ public class ExpenseTrackerView extends JFrame {
     inputPanel.add(categoryField);
     inputPanel.add(addTransactionBtn);
 
-    JPanel buttonPanel = new JPanel();
-    buttonPanel.add(amountFilterBtn);
-    buttonPanel.add(categoryFilterBtn);
-    buttonPanel.add(clearFilterBtn);
-    
+    JPanel filterPanel = new JPanel();
+    filterPanel.add(amountFilterBtn);
+    filterPanel.add(categoryFilterBtn);
+    filterPanel.add(clearFilterBtn);
+
+    JPanel actionPanel = new JPanel();
+    actionPanel.add(removeTransactionBtn);
+
     add(inputPanel, BorderLayout.NORTH);
-    add(new JScrollPane(transactionsTable), BorderLayout.CENTER); 
-    add(buttonPanel, BorderLayout.SOUTH);
+    add(new JScrollPane(transactionsTable), BorderLayout.CENTER);
+    // Create a combined panel for filters and actions at the bottom
+    JPanel southPanel = new JPanel(new BorderLayout());
+    southPanel.add(filterPanel, BorderLayout.NORTH);
+    southPanel.add(actionPanel, BorderLayout.SOUTH);
+    add(southPanel, BorderLayout.SOUTH);
 
     setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
     setVisible(true);
@@ -127,24 +136,47 @@ public class ExpenseTrackerView extends JFrame {
   public void addClearFilterListener(ActionListener listener) {
     clearFilterBtn.addActionListener(listener);
   }
-    
+
+  // Add listener for the remove button
+  public void addRemoveTransactionListener(ActionListener listener) {
+    removeTransactionBtn.addActionListener(listener);
+  }
+
+  // Getter for the remove button
+  public JButton getRemoveTransactionBtn() {
+    return removeTransactionBtn;
+  }
+
+  // Method to get the selected row index
+  public int getSelectedTransactionIndex() {
+    return transactionsTable.getSelectedRow();
+  }
+
+  // Method to show error messages
+  public void showErrorMessage(String message) {
+    JOptionPane.showMessageDialog(this, message, "Error", JOptionPane.ERROR_MESSAGE);
+  }
+
   public void refreshTable(List<Transaction> transactions) {
     model.setRowCount(0);
     this.displayedTransactions = transactions; // ✅ Track displayed transactions
 
-    int rowNum = model.getRowCount();
+    int rowNum = 0; // Start row numbering from 0 for internal logic
     double totalCost = 0;
 
     for (Transaction t : transactions) {
       totalCost += t.getAmount();
+      // Add row with serial number starting from 1 for display
+      model.addRow(new Object[]{rowNum + 1, t.getAmount(), t.getCategory(), t.getTimestamp()});
+      rowNum++;
     }
 
-    for (Transaction t : transactions) {
-      model.addRow(new Object[]{++rowNum, t.getAmount(), t.getCategory(), t.getTimestamp()}); 
+    // Add total row only if there are transactions
+    if (!transactions.isEmpty()) {
+        model.addRow(new Object[]{"Total", totalCost, null, null}); // Display total cost in Amount column
     }
 
-    model.addRow(new Object[]{"Total", null, null, totalCost});
-    transactionsTable.updateUI();
+    transactionsTable.updateUI(); // Use updateUI for better refresh
   }
 
   public JButton getAddTransactionBtn() {
@@ -156,7 +188,8 @@ public class ExpenseTrackerView extends JFrame {
   }
 
   public List<Transaction> getDisplayedTransactions() {
-    return displayedTransactions;
+    // Return an unmodifiable list to prevent external modification
+    return java.util.Collections.unmodifiableList(displayedTransactions);
   }
 
   // Optional: remove if no longer needed
@@ -181,6 +214,5 @@ public class ExpenseTrackerView extends JFrame {
 
   //     transactionsTable.repaint();
   // }
-
 
 }
