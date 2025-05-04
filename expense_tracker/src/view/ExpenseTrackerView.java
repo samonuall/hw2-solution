@@ -25,6 +25,7 @@ public class ExpenseTrackerView extends JFrame {
 
   private JButton clearFilterBtn;
   private JButton removeTransactionBtn; // Added remove button
+  private JButton exportBtn; // Added export button
 
   private List<Transaction> displayedTransactions = new ArrayList<>();
 
@@ -56,6 +57,8 @@ public class ExpenseTrackerView extends JFrame {
 
     clearFilterBtn = new JButton("Clear Filter");
     removeTransactionBtn = new JButton("Remove Selected Transaction"); // Initialize remove button
+    exportBtn = new JButton("Export to CSV"); // Initialize export button
+    exportBtn.setToolTipText("Export current transactions to CSV file");
 
     JPanel inputPanel = new JPanel();
     inputPanel.add(amountLabel);
@@ -71,6 +74,7 @@ public class ExpenseTrackerView extends JFrame {
 
     JPanel actionPanel = new JPanel();
     actionPanel.add(removeTransactionBtn);
+    actionPanel.add(exportBtn); // Add export button to action panel
 
     add(inputPanel, BorderLayout.NORTH);
     add(new JScrollPane(transactionsTable), BorderLayout.CENTER);
@@ -140,6 +144,26 @@ public class ExpenseTrackerView extends JFrame {
   // Add listener for the remove button
   public void addRemoveTransactionListener(ActionListener listener) {
     removeTransactionBtn.addActionListener(listener);
+  }
+
+  public void addExportListener(ActionListener listener) {
+    exportBtn.addActionListener(listener);
+  }
+
+  public String getExportFileName() {
+    return JOptionPane.showInputDialog(
+      this,
+      "Enter output CSV filename (must end with .csv):"
+    );
+  }
+
+  public void showInfoMessage(String message) {
+    JOptionPane.showMessageDialog(
+      this,
+      message,
+      "Info",
+      JOptionPane.INFORMATION_MESSAGE
+    );
   }
 
   // Getter for the remove button

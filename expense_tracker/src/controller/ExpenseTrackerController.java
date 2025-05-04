@@ -10,6 +10,8 @@ import javax.swing.JOptionPane;
 import model.ExpenseTrackerModel;
 import model.Transaction;
 import model.Filter.TransactionFilter;
+import model.CSVExporter;
+import java.io.IOException;
 
 public class ExpenseTrackerController {
   
@@ -31,6 +33,7 @@ public class ExpenseTrackerController {
     this.view.addApplyCategoryFilterListener(e -> applyCategoryFilter());
     this.view.addClearFilterListener(e -> clearFilter());
     this.view.addRemoveTransactionListener(e -> removeSelectedTransaction());
+    this.view.addExportListener(e -> exportTransactions()); // Add export listener
   }
   
   private void applyAmountFilter() {
@@ -121,6 +124,24 @@ public class ExpenseTrackerController {
 
     // Refresh the view (which will re-apply the filter and update the table)
     refresh();
+  }
+  
+  private void exportTransactions() {
+    String fileName = view.getExportFileName();
+    if (fileName == null || fileName.trim().isEmpty()) {
+      view.showErrorMessage("Filename cannot be empty.");
+      return;
+    }
+    if (!fileName.toLowerCase().endsWith(".csv")) {
+      fileName += ".csv";
+    }
+    CSVExporter exporter = new CSVExporter();
+    try {
+      exporter.export(view.getDisplayedTransactions(), fileName);
+      view.showInfoMessage("Transactions exported successfully to " + fileName);
+    } catch (IOException e) {
+      view.showErrorMessage("Failed to export transactions: " + e.getMessage());
+    }
   }
     
 }
