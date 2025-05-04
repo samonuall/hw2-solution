@@ -137,7 +137,7 @@ public class ExpenseTrackerController {
     }
     CSVExporter exporter = new CSVExporter();
     try {
-      exporter.export(view.getDisplayedTransactions(), fileName);
+      exporter.export(model.getTransactions(), fileName);
       view.showInfoMessage("Transactions exported successfully to " + fileName);
     } catch (IOException e) {
       view.showErrorMessage("Failed to export transactions: " + e.getMessage());
