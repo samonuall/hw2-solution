@@ -183,7 +183,7 @@ public class ExpenseTrackerView extends JFrame {
 
   public void refreshTable(List<Transaction> transactions) {
     model.setRowCount(0);
-    this.displayedTransactions = transactions; // ✅ Track displayed transactions
+    this.displayedTransactions = transactions;
 
     int rowNum = 0; // Start row numbering from 0 for internal logic
     double totalCost = 0;
