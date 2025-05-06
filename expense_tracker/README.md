@@ -21,5 +21,13 @@ This code is compiled with ```openjdk 17.0.7 2023-04-18```. Please update your J
 - Filter the transaction list by either amount or category: First specify the amount or category to be matched. Then click the corresponding Filter button. Highlights the matching transactions in the list.
 
 ## New Functionality
-- Remove a transaction: First select the transaction you want to remove. Then click remove transaction. This removes the transaction from the list, and makes sure only valid transactions can be removed.
+### 1. Undo a Transaction
+
+To remove a transaction:
+
+1. Click on the transaction row you want to remove.
+2. Click the **"Remove Selected Transaction"** button.
+
+Only valid (non-total) transactions can be removed. The table and total cost will update automatically. This feature improves usability by supporting controlled undo of user-added data.
+
 - Export to CSV: Click on the export to CSV button. Then specify a valid file name, and a csv file of the current transactions will be created and stored on your computer.
