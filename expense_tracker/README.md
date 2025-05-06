@@ -30,4 +30,17 @@ To remove a transaction:
 
 Only valid (non-total) transactions can be removed. The table and total cost will update automatically. This feature improves usability by supporting controlled undo of user-added data.
 
-- Export to CSV: Click on the export to CSV button. Then specify a valid file name, and a csv file of the current transactions will be created and stored on your computer.
+### 2. Export to CSV: Design Summary
+
+To improve extensibility, we implemented a CSV export feature using the MVC pattern.
+
+- The **view** prompts the user for a filename and offers a dedicated export button.
+- The **controller** handles input validation and calls a reusable model-layer class (`CSVExporter`) to handle file writing.
+- The **model**'s `CSVExporter` class writes transactions to CSV format with a header line followed by one line per transaction.
+
+This design applies object-oriented principles such as:
+- **Open/Closed Principle**: `CSVExporter` can be extended for other export formats without modifying controller logic.
+- **No Magic Strings**: Headers and data are structured cleanly and consistently.
+
+Input validation ensures the file name ends with `.csv`, and user feedback is provided for success or failure.
+
